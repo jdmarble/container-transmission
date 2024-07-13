@@ -1,0 +1,82 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: transmission
+  name: transmission
+  labels:
+    app.kubernetes.io/name: transmission
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: transmission
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: transmission
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: transmission
+          # v4.0.5-r2
+          image: ghcr.io/jdmarble/container-transmission@sha256:f3ec386f64c2d9d9cb99a389e3a3a03d8188e8640226feb6674118a6144eba6a
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9091
+              name: http
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /transmission
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /transmission
+              port: http
+          resources:
+            # I just made these up.
+            # Measure your actual needs or omit.
+            requests:
+              cpu: 100m
+              memory: 1Gi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10000
+            runAsGroup: 10000
+          volumeMounts:
+            - name: static-config
+              mountPath: /config/settings.json
+              subPath: settings.json
+            - name: persistent-config
+              mountPath: /config
+            - name: download
+              mountPath: /download
+            - name: tmp
+              mountPath: /tmp
+      securityContext:
+        fsGroup: 10000
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: static-config
+          configMap:
+            name: transmission
+        - name: persistent-config
+          persistentVolumeClaim:
+            claimName: transmission-config
+        - name: download
+          persistentVolumeClaim:
+            claimName: download
+        - name: tmp
+          emptyDir: {}

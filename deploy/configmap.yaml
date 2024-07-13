@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: transmission
+  name: transmission
+data:
+  # See Transmission documentation for settings.json.
+  # https://github.com/transmission/transmission/blob/main/docs/Editing-Configuration-Files.md
+  settings.json: |
+    {
+      "rpc-host-whitelist-enabled": false,
+      "rpc-whitelist-enabled": false
+    }
