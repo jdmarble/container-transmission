@@ -21,8 +21,8 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: transmission
-          # v4.0.5-r2
-          image: ghcr.io/jdmarble/container-transmission@sha256:f3ec386f64c2d9d9cb99a389e3a3a03d8188e8640226feb6674118a6144eba6a
+          # v4.0.6-r0
+          image: ghcr.io/jdmarble/container-transmission@sha256:add3a431ea61432cfca6a0a434e00084540355ecd3445b7c606b0de8666ee1c5
           imagePullPolicy: Always
           ports:
             - containerPort: 9091

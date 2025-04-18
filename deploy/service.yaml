@@ -10,5 +10,5 @@ spec:
       port: 80
       targetPort: http
   selector:
-    app.kubernetes.io/name: torrent-client
-  type: LoadBalancer
+    app.kubernetes.io/name: transmission
+  type: ClusterIP
